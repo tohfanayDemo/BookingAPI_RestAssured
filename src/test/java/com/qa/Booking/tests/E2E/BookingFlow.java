@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 import com.qa.Booking.base.BaseTest;
 import com.qa.Booking.client.ResponseBuilder;
@@ -26,7 +27,7 @@ public class BookingFlow extends BaseTest{
 	
 	@BeforeMethod
 	public void getAuthToken() {
-
+		
 		restClient = new RestClient();
 		request = restClient.createRequestSpec_PostPutPatch(baseURI,"JSON",credentialJson);
 		
@@ -42,21 +43,20 @@ public class BookingFlow extends BaseTest{
 	public void bookingFlow() {
 		
 		//Step1: Get All Bookings Count
-		printSection("Get All Booking and Booking count");
+		bookingHelper.printSection("Get All Booking and Booking count");
 		//restClient = new RestClient();
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
 		response = RestAssured.given(request).when().get(GET_ALL_BOOKINGS)
 				.then().assertThat().spec(ResponseBuilder.expResSpec(APIHTTPStatus.OK_200.getCode(), "JSON"))
 				.extract().response();
 		
-		Assert.assertTrue(response.getStatusLine().contains(APIHTTPStatus.OK_200.getMessage()));
 		JsonPath getAll_jsonResponse = response.jsonPath();
 		int totalBookingCount = getAll_jsonResponse.getList("$").size(); 
 		
 		
 		
 		//Step 2: Create A Booking
-		printSection("Create Booking");
+		bookingHelper.printSection("Create Booking");
 		
 		Bookingdates dates = new Bookingdates("2025-07-01","2025-07-15");
 		Booking bookingDetails = new Booking("Tohfee","Nay",120.99,true, dates,"No vege oil");
@@ -75,9 +75,9 @@ public class BookingFlow extends BaseTest{
 		JsonPath post_jsonResponse = response.jsonPath();
 		
 		int bookingId = post_jsonResponse.getInt("bookingid");
-		verifyBookingDetails_Post_Response(post_jsonResponse,bookingDetails);
+		bookingHelper.verifyBookingDetails_Post_Response(post_jsonResponse,bookingDetails);
 				
-		printSection("Verify Booking count increased by 1 after POST call");
+		bookingHelper.printSection("Verify Booking count increased by 1 after POST call");
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
 		RestAssured.given(request).when().get(GET_ALL_BOOKINGS)
 				.then()
@@ -87,7 +87,7 @@ public class BookingFlow extends BaseTest{
 		
 		
 		//Step 3: Get Booking By Id
-		printSection("Get Booking By Booking Id"); //GET /booking/{id}
+		bookingHelper.printSection("Get Booking By Booking Id"); //GET /booking/{id}
 		
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
 		response = RestAssured.given(request).pathParam("id", bookingId).when().get(GET_BOOKING_BY_ID)
@@ -96,12 +96,12 @@ public class BookingFlow extends BaseTest{
 				.extract().response();
 		Assert.assertTrue(response.getStatusLine().contains(APIHTTPStatus.OK_200.getMessage()));
 		JsonPath getById_jsonResponse = response.jsonPath();
-		verifyBookingDetails_Get_Put_Response(getById_jsonResponse,bookingDetails);
+		bookingHelper.verifyBookingDetails_Get_Put_Response(getById_jsonResponse,bookingDetails);
 		
 		
 		
 		//Step 4: Update Existing Booking By Id
-		printSection("Update Booking");
+		bookingHelper.printSection("Update Booking");
 		dates.setCheckin("2025-07-07");
 		bookingDetails.setFirstname("Updated");
 		bookingDetails.setLastname("Updated");
@@ -122,18 +122,18 @@ public class BookingFlow extends BaseTest{
 				.extract().response();
 		Assert.assertTrue(response.getStatusLine().contains(APIHTTPStatus.OK_200.getMessage()));
 		JsonPath put_jsonResponse = response.jsonPath();
-		verifyBookingDetails_Get_Put_Response(put_jsonResponse,bookingDetails);
+		bookingHelper.verifyBookingDetails_Get_Put_Response(put_jsonResponse,bookingDetails);
 		
-		printSection("Get Booking By Id & Check PUT call changes reflected");
+		bookingHelper.printSection("Get Booking By Id & Check PUT call changes reflected");
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
 		response = RestAssured.given(request).pathParam("id", bookingId).when().log().all().get(GET_BOOKING_BY_ID);
 		getById_jsonResponse = response.jsonPath();
-		verifyBookingDetails_Get_Put_Response(getById_jsonResponse,bookingDetails);	
+		bookingHelper.verifyBookingDetails_Get_Put_Response(getById_jsonResponse,bookingDetails);	
 		
 		
 		
 		//Step 5: Delete Existing Booking By Id 
-		printSection("Delete Booking"); 
+		bookingHelper.printSection("Delete Booking"); 
 
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON", token);
 		response = RestAssured.given(request).pathParam("id", bookingId).when().log().all().delete(DELETE_BOOKING)
@@ -142,7 +142,7 @@ public class BookingFlow extends BaseTest{
 				.extract().response();
 		Assert.assertTrue(response.getStatusLine().contains(APIHTTPStatus.CREATED_201.getMessage()));
 		
-		printSection("Get Booking By Id After Deletion & Check it is not found anymore");
+		bookingHelper.printSection("Get Booking By Id After Deletion & Check it is not found anymore");
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
 		response = RestAssured.given(request).pathParam("id", bookingId).when().get(GET_BOOKING_BY_ID)
 				.then().log().all()
@@ -153,8 +153,8 @@ public class BookingFlow extends BaseTest{
 		softAssert.assertAll();
 			
 	}
-	
-	private void printSection(String message) {
+	/*
+	private void bookingHelper.printSection(String message) {
 		System.out.println();
         System.out.println("\n================= " + message + " ==================");
     }
@@ -177,5 +177,5 @@ public class BookingFlow extends BaseTest{
         softAssert.assertEquals(json.getString("booking.bookingdates.checkin"), expected.getBookingdates().getCheckin());
         softAssert.assertEquals(json.getString("booking.bookingdates.checkout"), expected.getBookingdates().getCheckout());
         softAssert.assertEquals(json.getString("booking.additionalneeds"), expected.getAdditionalneeds());
-    }
+    }*/
 }

@@ -9,6 +9,7 @@ public enum APIHTTPStatus {
     UNAUTHORIZED_401(401, "Unauthorized"),
     FORBIDDEN_403(403, "Forbidden"),
     NOT_FOUND_404(404, "Not Found"),
+    METHOD_NOT_ALLOWED_405(405, "Method Not Allowed"),
     INTERNAL_SERVER_ERROR_500(500, "Internal Server Error");
 
     private final int code;
