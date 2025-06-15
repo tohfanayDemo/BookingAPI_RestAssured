@@ -16,17 +16,17 @@ import io.restassured.RestAssured;
 
 public class BaseTest {
 	
-	//Endpoints
+	//Endpoints  
 	public static final String CREATE_AUTH_TOKEN = "/auth";
 	public static final String GET_ALL_BOOKINGS = "/booking";
 	public static final String GET_BOOKING_BY_ID = "/booking/{id}";
+	public static final String GET_BOOKING_BY_NAME = "/booking?firstname={firstName}&lastname={lastName}";
 	public static final String CREATE_BOOKING = "/booking";
 	public static final String UPDATE_BOOKING = "/booking/{id}";
 	public static final String PARTIAL_UPDATE_BOOKING="/booking/{id}";
 	public static final String DELETE_BOOKING="/booking/{id}";
 	
 	public static final String INCORRECT_BASEURI = "https://restful-bookerrrsss.herokuapp.com";
-
 	
 	protected ConfigurationManager config;
 	protected Properties prop;

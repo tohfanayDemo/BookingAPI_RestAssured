@@ -30,19 +30,17 @@ public class BookingHelper {
         System.out.println("\n================= " + message + " ==================");
     }
 	
-    public void verifyBookingDetails_Get_Put_Response(JsonPath json, Booking expected) {
-		softAssert = new SoftAssert();
-        softAssert.assertEquals(json.getString("firstname"), expected.getFirstname());
-        softAssert.assertEquals(json.getString("lastname"), expected.getLastname());
-        softAssert.assertEquals(json.getDouble("totalprice"), expected.getTotalprice());
-        softAssert.assertEquals(json.getBoolean("depositpaid"), expected.isDepositpaid());
-        softAssert.assertEquals(json.getString("bookingdates.checkin"), expected.getBookingdates().getCheckin());
-        softAssert.assertEquals(json.getString("bookingdates.checkout"), expected.getBookingdates().getCheckout());
-        softAssert.assertEquals(json.getString("additionalneeds"), expected.getAdditionalneeds());
+    public void verifyBookingDetails_Get_Put_Response(JsonPath json, Booking booking, SoftAssert softAssert) {
+        softAssert.assertEquals(json.getString("firstname"), booking.getFirstname());
+        softAssert.assertEquals(json.getString("lastname"), booking.getLastname());
+        softAssert.assertEquals(json.getDouble("totalprice"), booking.getTotalprice());
+        softAssert.assertEquals(json.getBoolean("depositpaid"), booking.isDepositpaid());
+        softAssert.assertEquals(json.getString("bookingdates.checkin"), booking.getBookingdates().getCheckin());
+        softAssert.assertEquals(json.getString("bookingdates.checkout"), booking.getBookingdates().getCheckout());
+        softAssert.assertEquals(json.getString("additionalneeds"), booking.getAdditionalneeds());
     }
 	
-    public void verifyBookingDetails_Post_Response(JsonPath json, Booking expected) {
-		softAssert = new SoftAssert();
+    public void verifyBookingDetails_Post_Response(JsonPath json, Booking expected, SoftAssert softAssert) {
         softAssert.assertEquals(json.getString("booking.firstname"), expected.getFirstname());
         softAssert.assertEquals(json.getString("booking.lastname"), expected.getLastname());
         softAssert.assertEquals(json.getDouble("booking.totalprice"), expected.getTotalprice());

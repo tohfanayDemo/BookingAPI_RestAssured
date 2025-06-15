@@ -2,6 +2,10 @@ package com.qa.Booking.tests.Unit;
 
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -17,6 +21,7 @@ import com.qa.Booking.utils.BookingHelper;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import io.restassured.http.Method;
 
 public class GET_GetAllBookings_GetBookingsById_Name extends BaseTest{
 
@@ -38,7 +43,7 @@ public class GET_GetAllBookings_GetBookingsById_Name extends BaseTest{
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
 		response = RestAssured.given(request).when().get(GET_ALL_BOOKINGS)
 				.then().assertThat().spec(ResponseBuilder.expResSpec(APIHTTPStatus.OK_200.getCode(), "JSON"))
-				.body(matchesJsonSchemaInClasspath("schema/GetAllBookings_Schema.json"))
+				.body(matchesJsonSchemaInClasspath("schema/GetAllBookings_GeyByName_Schema.json"))
 				.extract().response();
 		Assert.assertTrue(response.getStatusLine().contains(APIHTTPStatus.OK_200.getMessage()));
 		
@@ -142,7 +147,7 @@ public class GET_GetAllBookings_GetBookingsById_Name extends BaseTest{
 		bookingId = 1013;
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
 		response = RestAssured.given(request).pathParam("id", bookingId)
-				.when().log().all().post(GET_BOOKING_BY_ID);
+				.when().log().all().get(GET_BOOKING_BY_ID);
 		
 		//Failing: Getting 404 instead of 405
 		softAssert.assertEquals(response.statusCode(), APIHTTPStatus.METHOD_NOT_ALLOWED_405.getCode());
@@ -175,7 +180,7 @@ public class GET_GetAllBookings_GetBookingsById_Name extends BaseTest{
 		
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
 		response = RestAssured.given(request).urlEncodingEnabled(false).pathParam("id", bookingId)
-				.when().log().all().post(GET_BOOKING_BY_ID);
+				.when().log().all().get(GET_BOOKING_BY_ID);
 		
 		
 		softAssert.assertEquals(response.statusCode(), expectedStatusCode);
@@ -183,5 +188,129 @@ public class GET_GetAllBookings_GetBookingsById_Name extends BaseTest{
 		
 		softAssert.assertAll();
 		
+	}
+	
+	@Test
+	public void getBookingByName_positive() {
+		
+		firstName ="Eric";
+		lastName = "Jackson";
+		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
+		response = RestAssured.given(request).pathParam("firstName", firstName).pathParam("lastName", lastName)
+				.when().log().all().get(GET_BOOKING_BY_NAME)
+				.then().log().all().assertThat().spec(ResponseBuilder.expResSpec(APIHTTPStatus.OK_200.getCode(), "JSON"))
+				.body(matchesJsonSchemaInClasspath("schema/GetAllBookings_GeyByName_Schema.json"))
+				.extract().response();
+		
+		Assert.assertTrue(response.getStatusLine().contains(APIHTTPStatus.OK_200.getMessage()));
+		
+		List<Integer> bookingIds = response.jsonPath().getList("bookingid");
+
+		Assert.assertTrue(bookingIds.contains(bookingId), "Expected bookingid "+bookingId+" was not found.");
+		
+	}
+	
+	@DataProvider(name = "invalidBookingNameScenarios")
+	public Object[][] invalidNamePathParameters() {
+	    return new Object[][] {
+	    	{"Incorrect Path Parameter - Non-existent First Name", "Meh", null, 404, "Not Found"},
+	        {"Incorrect Path Parameter - Non-existent Last Name", null, "Meh", 404, "Not Found"},
+	        {"Invalid Path Parameter - First Name contains Number", 23, null, 400, "Bad Request"},
+	        {"Invalid Path Parameter - Last Name contains Number", null, 23, 400, "Bad Request"},
+	        {"Invalid Path Parameter - First Name contains Boolean value", true, null, 400, "Bad Request"},
+	        {"Invalid Path Parameter - Last Name contains Boolean value", null, false, 400, "Bad Request"},
+	        {"Invalid Path Parameter - First Name contains Special character", "@-!", null, 400, "Bad Request"},
+	        {"Invalid Path Parameter - Last Name contains Special character", null, "@-!", 400, "Bad Request"},
+	        {"Invalid Path Parameter - First Name contains White space", " ", null, 400, "Bad Request"},
+	        {"Invalid Path Parameter - Last Name contains White space", null, " ", 400, "Bad Request"},
+	        {"Empty String Values - First Name", "", null, 400, "Bad Request"},
+	        {"Empty String Values - Last Name", null, "", 400, "Bad Request"},
+	        {"Empty String Values - Both Parameters", "", "", 400, "Bad Request"},
+	        {"Missing First Name", null, null, 400, "Bad Request"},
+	        {"Missing Last Name", null, null, 400, "Bad Request"},
+	        {"Missing Both Names", null, null, 400, "Bad Request"}
+	    };
+	}
+	
+	@Test(dataProvider = "invalidBookingNameScenarios")
+	public void getBookingByName_negative_incorrectName(String scenarioName, Object firstNameData, Object lastNameData, 
+			int expectedStatusCode, String expectedStatusLine) {
+		
+		System.out.println("Scenario Name = " + scenarioName);
+		
+		Object firstName,lastName; 
+		
+		//default name values
+		//firstName = (firstNameData == null) ? this.firstName : firstNameData;
+		firstName = (firstNameData == null) ? "Tohfa" : firstNameData;
+
+		//lastName = (lastNameData == null) ? this.lastName : lastNameData;
+		lastName = (lastNameData == null) ? "Nay" : lastNameData;
+
+		
+		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
+		String endpoint = "/booking";
+		
+		try {
+			if(scenarioName.contains("Missing")) { //"where" clause omitted - full/partial
+					
+					// Build path request
+				    String queryString = null, path = null;
+				    
+				    // Conditionally add query parameters based on scenario
+				    if ("Missing First Name".equals(scenarioName)) {
+				    	queryString = "?lastname={lastName}";
+				    	queryString = queryString.replace("{lastName}", lastName.toString());
+				    } 
+				    else if ("Missing Last Name".equals(scenarioName)) {
+				    	queryString = "?firstname={firstName}";
+				    	queryString = queryString.replace("{firstName}", firstName.toString());
+				    } 
+				    else if ("Missing Both Names".equals(scenarioName)) {
+				    	queryString = ""; 
+				    } 
+				    
+				    path = endpoint + queryString;
+				    response = RestAssured.given(request).when().log().all().get(path);
+				  
+			}
+			else {
+					
+				if(scenarioName.contains("White space")) { //params with white space
+					
+					String rawUrl = null, malformedQuery = "";
+					
+					if(scenarioName.contains("First Name contains White space")) {
+						malformedQuery = "?firstname= " + "&lastname="+lastName.toString()+"";
+						rawUrl = baseURI + endpoint + malformedQuery;
+			
+						
+					}else if (scenarioName.equals("Last Name contains White space")) {
+					    malformedQuery = "?firstname="+firstName.toString()+"&lastname= "; //this one throwing exception
+						rawUrl = baseURI + endpoint + malformedQuery;
+	
+					}
+	
+					response = RestAssured.given().spec(request).when().log().all().request(Method.GET, rawUrl);  // <== This bypasses URI encoding checks
+				}
+				
+				Map<String, Object> queryParams = new HashMap<String, Object>();
+				queryParams.put("firstname", firstName);
+				queryParams.put("lastname", lastName);
+	
+				response = RestAssured.given(request).queryParams(queryParams).urlEncodingEnabled(false)
+						.when().log().all().get(endpoint).then().log().headers().extract().response();
+			
+			}
+		} catch (IllegalArgumentException e) {
+		    System.out.println("Caught expected IllegalArgumentException for malformed URI:");
+		    System.out.println(e.getMessage());
+		    softAssert.fail("Malformed URI triggered exception as expected: " + e.getMessage());
+		}	
+		
+	    softAssert.assertEquals(response.statusCode(), expectedStatusCode);
+	    softAssert.assertTrue(response.getStatusLine().contains(expectedStatusLine));
+	    softAssert.assertAll(); 
+
 	}
 }

@@ -28,6 +28,7 @@ public class BookingFlow extends BaseTest{
 	@BeforeMethod
 	public void getAuthToken() {
 		
+		softAssert = new SoftAssert();
 		restClient = new RestClient();
 		request = restClient.createRequestSpec_PostPutPatch(baseURI,"JSON",credentialJson);
 		
@@ -75,7 +76,7 @@ public class BookingFlow extends BaseTest{
 		JsonPath post_jsonResponse = response.jsonPath();
 		
 		int bookingId = post_jsonResponse.getInt("bookingid");
-		bookingHelper.verifyBookingDetails_Post_Response(post_jsonResponse,bookingDetails);
+		bookingHelper.verifyBookingDetails_Post_Response(post_jsonResponse,bookingDetails,softAssert);
 				
 		bookingHelper.printSection("Verify Booking count increased by 1 after POST call");
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
@@ -96,7 +97,7 @@ public class BookingFlow extends BaseTest{
 				.extract().response();
 		Assert.assertTrue(response.getStatusLine().contains(APIHTTPStatus.OK_200.getMessage()));
 		JsonPath getById_jsonResponse = response.jsonPath();
-		bookingHelper.verifyBookingDetails_Get_Put_Response(getById_jsonResponse,bookingDetails);
+		bookingHelper.verifyBookingDetails_Get_Put_Response(getById_jsonResponse,bookingDetails,softAssert);
 		
 		
 		
@@ -122,13 +123,13 @@ public class BookingFlow extends BaseTest{
 				.extract().response();
 		Assert.assertTrue(response.getStatusLine().contains(APIHTTPStatus.OK_200.getMessage()));
 		JsonPath put_jsonResponse = response.jsonPath();
-		bookingHelper.verifyBookingDetails_Get_Put_Response(put_jsonResponse,bookingDetails);
+		bookingHelper.verifyBookingDetails_Get_Put_Response(put_jsonResponse,bookingDetails, softAssert);
 		
 		bookingHelper.printSection("Get Booking By Id & Check PUT call changes reflected");
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
 		response = RestAssured.given(request).pathParam("id", bookingId).when().log().all().get(GET_BOOKING_BY_ID);
 		getById_jsonResponse = response.jsonPath();
-		bookingHelper.verifyBookingDetails_Get_Put_Response(getById_jsonResponse,bookingDetails);	
+		bookingHelper.verifyBookingDetails_Get_Put_Response(getById_jsonResponse,bookingDetails, softAssert);	
 		
 		
 		
@@ -153,29 +154,5 @@ public class BookingFlow extends BaseTest{
 		softAssert.assertAll();
 			
 	}
-	/*
-	private void bookingHelper.printSection(String message) {
-		System.out.println();
-        System.out.println("\n================= " + message + " ==================");
-    }
-	
-	private void verifyBookingDetails_Get_Put_Response(JsonPath json, Booking expected) {
-        softAssert.assertEquals(json.getString("firstname"), expected.getFirstname());
-        softAssert.assertEquals(json.getString("lastname"), expected.getLastname());
-        softAssert.assertEquals(json.getDouble("totalprice"), expected.getTotalprice());
-        softAssert.assertEquals(json.getBoolean("depositpaid"), expected.isDepositpaid());
-        softAssert.assertEquals(json.getString("bookingdates.checkin"), expected.getBookingdates().getCheckin());
-        softAssert.assertEquals(json.getString("bookingdates.checkout"), expected.getBookingdates().getCheckout());
-        softAssert.assertEquals(json.getString("additionalneeds"), expected.getAdditionalneeds());
-    }
-	
-	private void verifyBookingDetails_Post_Response(JsonPath json, Booking expected) {
-        softAssert.assertEquals(json.getString("booking.firstname"), expected.getFirstname());
-        softAssert.assertEquals(json.getString("booking.lastname"), expected.getLastname());
-        softAssert.assertEquals(json.getDouble("booking.totalprice"), expected.getTotalprice());
-        softAssert.assertEquals(json.getBoolean("booking.depositpaid"), expected.isDepositpaid());
-        softAssert.assertEquals(json.getString("booking.bookingdates.checkin"), expected.getBookingdates().getCheckin());
-        softAssert.assertEquals(json.getString("booking.bookingdates.checkout"), expected.getBookingdates().getCheckout());
-        softAssert.assertEquals(json.getString("booking.additionalneeds"), expected.getAdditionalneeds());
-    }*/
+
 }
