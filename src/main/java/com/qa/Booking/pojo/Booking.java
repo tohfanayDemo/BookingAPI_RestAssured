@@ -12,23 +12,23 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(Include.NON_NULL) 
+@JsonInclude(Include.NON_NULL)
 public class Booking {
 
-	private String firstname;
-	private String lastname;
-	private double totalprice;
-	private boolean depositpaid;
+	private Object firstname;
+	private Object lastname;
+	private Object totalprice;
+	private Object depositpaid;
 	private Bookingdates bookingdates;
-	private String additionalneeds;
-	
+	private Object additionalneeds;
+
 	@Builder
 	@Data
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@JsonInclude(Include.NON_NULL)
-	public static class Bookingdates{
-		private String checkin;
-		private String checkout;
+	public static class Bookingdates {
+		private Object checkin;
+		private Object checkout;
 	}
 }

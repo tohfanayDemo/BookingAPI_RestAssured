@@ -13,6 +13,7 @@ import com.qa.Booking.client.RestClient;
 import com.qa.Booking.constants.APIHTTPStatus;
 import com.qa.Booking.pojo.Booking;
 import com.qa.Booking.pojo.Booking.Bookingdates;
+import com.qa.Booking.utils.Util;
 
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
@@ -44,7 +45,7 @@ public class BookingFlow extends BaseTest{
 	public void bookingFlow() {
 		
 		//Step1: Get All Bookings Count
-		bookingUtils.printSection("Get All Booking and Booking count");
+		Util.printSection("Get All Booking and Booking count");
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
 		response = RestAssured.given(request).when().get(GET_ALL_BOOKINGS)
 				.then().assertThat().spec(ResponseBuilder.expResSpec(APIHTTPStatus.OK_200.getCode(), "JSON"))
@@ -56,7 +57,7 @@ public class BookingFlow extends BaseTest{
 		
 		
 		//Step 2: Create A Booking
-		bookingUtils.printSection("Create Booking");
+		Util.printSection("Create Booking");
 		
 		Bookingdates dates = new Bookingdates("2025-07-01","2025-07-15");
 		Booking bookingDetails = new Booking("Tohfee","Nay",120.99,true, dates,"No vege oil");
@@ -72,7 +73,7 @@ public class BookingFlow extends BaseTest{
 		int bookingId = post_jsonResponse.getInt("bookingid");
 		bookingUtils.verifyBookingDetails_Post_Response(post_jsonResponse,bookingDetails,softAssert);
 				
-		bookingUtils.printSection("Verify Booking count increased by 1 after POST call");
+		Util.printSection("Verify Booking count increased by 1 after POST call");
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
 		RestAssured.given(request).when().get(GET_ALL_BOOKINGS)
 				.then()
@@ -82,7 +83,7 @@ public class BookingFlow extends BaseTest{
 		
 		
 		//Step 3: Get Booking By Id
-		bookingUtils.printSection("Get Booking By Booking Id"); //GET /booking/{id}
+		Util.printSection("Get Booking By Booking Id"); //GET /booking/{id}
 		
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
 		response = RestAssured.given(request).pathParam("id", bookingId).when().get(GET_BOOKING_BY_ID)
@@ -97,7 +98,7 @@ public class BookingFlow extends BaseTest{
 		
 		
 		//Step 4: Update Existing Booking By Id
-		bookingUtils.printSection("Update Booking");
+		Util.printSection("Update Booking");
 		
 		dates.setCheckin("2025-07-07");
 		bookingDetails.setFirstname("Updated");
@@ -117,7 +118,7 @@ public class BookingFlow extends BaseTest{
 		JsonPath put_jsonResponse = response.jsonPath();
 		bookingUtils.verifyBookingDetails_Get_Put_Response(put_jsonResponse,bookingDetails, softAssert);
 		
-		bookingUtils.printSection("Get Booking By Id & Check PUT call changes reflected");
+		Util.printSection("Get Booking By Id & Check PUT call changes reflected");
 		
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
 		response = RestAssured.given(request).pathParam("id", bookingId).when().log().all().get(GET_BOOKING_BY_ID);
@@ -127,7 +128,7 @@ public class BookingFlow extends BaseTest{
 		
 		
 		//Step 5: Delete Existing Booking By Id 
-		bookingUtils.printSection("Delete Booking"); 
+		Util.printSection("Delete Booking"); 
 
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON", token);
 		response = RestAssured.given(request).pathParam("id", bookingId).when().log().all().delete(DELETE_BOOKING)
@@ -136,7 +137,7 @@ public class BookingFlow extends BaseTest{
 				.extract().response();
 		Assert.assertTrue(response.getStatusLine().contains(APIHTTPStatus.CREATED_201.getMessage()));
 		
-		bookingUtils.printSection("Get Booking By Id After Deletion & Check it is not found anymore");
+		Util.printSection("Get Booking By Id After Deletion & Check it is not found anymore");
 		
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
 		response = RestAssured.given(request).pathParam("id", bookingId).when().get(GET_BOOKING_BY_ID)

@@ -1,7 +1,7 @@
 allure-results/
 test-output/
 reports/
-
+src/test/resources/To-Do.txt
 application.log
 ##############################
 ## Java

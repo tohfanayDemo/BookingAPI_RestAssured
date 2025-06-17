@@ -17,6 +17,7 @@ import com.qa.Booking.client.ResponseBuilder;
 import com.qa.Booking.client.RestClient;
 import com.qa.Booking.constants.APIHTTPStatus;
 import com.qa.Booking.utils.BookingUtils;
+import com.qa.Booking.utils.Util;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -47,7 +48,7 @@ public class GET_GetAllBookings_GetBookingsById_Name extends BaseTest{
 				.extract().response();
 		Assert.assertTrue(response.getStatusLine().contains(APIHTTPStatus.OK_200.getMessage()));
 		
-		bookingId = BookingUtils.generateRandomNumber(response);
+		bookingId = Util.generateRandomNumber(response);
 	}
 	
 	@Test

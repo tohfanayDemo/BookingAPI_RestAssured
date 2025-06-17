@@ -2,6 +2,7 @@ package com.qa.Booking.tests.Unit;
 
 import java.util.Map;
 
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -9,8 +10,9 @@ import org.testng.asserts.SoftAssert;
 
 import com.qa.Booking.base.BaseTest;
 import com.qa.Booking.client.RestClient;
-import com.qa.Booking.pojo.InvalidBooking;
-import com.qa.Booking.pojo.InvalidBooking.InvalidBookingdates;
+import com.qa.Booking.pojo.Booking;
+import com.qa.Booking.pojo.Booking.Bookingdates;
+import com.qa.Booking.utils.Util;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -125,50 +127,50 @@ public class POST_CreateBooking extends BaseTest {
 			Object lastNameData, Object totalpriceData, Object depositpaidData, Object checkinData, Object checkoutData,
 			Object additionalneeds, int expectedStatusCode, String expectedStatusLine, String expectedResponseMsg) {
 
-		System.out.println("****************** " + scenarioName.toUpperCase() + " ******************");
-
-		InvalidBookingdates dates = new InvalidBookingdates(checkinData, checkoutData);
-		InvalidBooking invalidBooking = new InvalidBooking(firstNameData, lastNameData, totalpriceData, depositpaidData,
+		//*********************************************************
+		Util.printSection(scenarioName.toUpperCase());
+		Bookingdates dates = new Bookingdates(checkinData, checkoutData);
+		Booking invalidBooking = new Booking(firstNameData, lastNameData, totalpriceData, depositpaidData,
 				dates, additionalneeds);
 
-		if (scenarioName.contains("null value")) { //won't ommit properties
+		if (scenarioName.contains("null value")) {
 
-			System.out.println(" ============> Inside Null Value block <======================");
-			System.out.println();
 			Map<String, Object> bookingMap = bookingUtils.convertToMap(invalidBooking);
 			request = restClient.createRequestSpec_PostPutPatch(baseURI, "JSON", bookingMap);
-		} else {
-			System.out.println(" ============> Inside REGULAR Block <======================");
-			System.out.println();
+		} 
+		else {
+			
 			request = restClient.createRequestSpec_PostPutPatch(baseURI, "JSON", invalidBooking);
 		}
 
-		System.out.println("******************* API REQ/RES *********************************************");
+		//*********************************************************
+		Util.printSection("API REQ/RES");
 
 		response = RestAssured.given(request).when().log().all().post(CREATE_BOOKING);
 
 		softAssert.assertEquals(response.getStatusCode(), expectedStatusCode);
 		softAssert.assertTrue(response.getStatusLine().contains(expectedStatusLine));
-		
+		softAssert.assertAll();
 
+	}
+	
+	@AfterMethod
+	public void deleteCreatedBooking() {
+		
 		if (response.getStatusCode() == 200) {
 			int bookingId = response.jsonPath().getInt("bookingid");
 			System.out.println("Booking ID received: " + bookingId);
 
-			System.out.println("************** Create token for Delete call ****************");
+			//*********************************************************
+			Util.printSection(" Create token for Delete call ");
 			request = restClient.createRequestSpec_PostPutPatch(baseURI, "JSON", credentialJson);
 			String token = RestAssured.given(request).when().log().all().post(CREATE_AUTH_TOKEN).then().log().all()
 					.extract().path("token");
 
-			System.out.println("************** Call DELETE API ****************");
+			Util.printSection(" Call DELETE API ");
 			request = restClient.createRequestSpec_GetDelete(baseURI, "JSON", token);
 			RestAssured.given(request).pathParam("id", bookingId).when().log().all().delete(DELETE_BOOKING).then().log()
 					.all();
 		}
-
-		System.out.println("******************** THE END ********************************************");
-		
-		softAssert.assertAll();
-
 	}
 }

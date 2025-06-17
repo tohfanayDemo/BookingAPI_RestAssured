@@ -24,8 +24,7 @@ public class ExcelUtil {
 
 		try {
 			FileInputStream ip = new FileInputStream(TEST_DATA_SHEET_PATH);
-			book = WorkbookFactory.create(ip); // create method returns workbook. So create an object of Workbook at
-												// class level
+			book = WorkbookFactory.create(ip); 
 			sheet = book.getSheet(sheetName);
 
 			// get last row number from active sheet
@@ -40,11 +39,7 @@ public class ExcelUtil {
 
 			for (int i = 0; i < row; i++) {
 				for (int j = 0; j < column; j++) {
-					data[i][j] = sheet.getRow(i + 1).getCell(j).toString();// Java doesn't understand what is number in
-																			// Excel. So we read everything in String.
-																			// If you want to do any mathematical
-																			// operation, then you'll have to do
-																			// Integer.parseInt()
+					data[i][j] = sheet.getRow(i + 1).getCell(j).toString();
 					// System.out.println(data[i][j]);
 				}
 
@@ -61,9 +56,6 @@ public class ExcelUtil {
 
 		return data;
 	}
-
-	// Note: Don't do status pass fail writing in Excel. That should happen in
-	// Allure report
 
 	
 	  public static void main(String[] args) {
