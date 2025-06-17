@@ -9,7 +9,7 @@ import org.testng.asserts.SoftAssert;
 
 import com.qa.Booking.client.RestClient;
 import com.qa.Booking.configuration.ConfigurationManager;
-import com.qa.Booking.utils.BookingHelper;
+import com.qa.Booking.utils.BookingUtils;
 
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
@@ -33,7 +33,7 @@ public class BaseTest {
 	protected RestClient restClient;
 	protected String baseURI, testUsername, testPassword, credentialJson;
 	protected SoftAssert softAssert;
-	protected BookingHelper bookingHelper;
+	protected BookingUtils bookingUtils;
 
 	@Parameters({"baseURI"})
 	@BeforeTest
@@ -57,7 +57,7 @@ public class BaseTest {
 		testPassword = (password == null) ? prop.getProperty("password") : password;
 
 		credentialJson = "{ \"username\": \""+testUsername+"\", \"password\": \""+testPassword+"\" }";
-		bookingHelper = new BookingHelper();
+		bookingUtils = new BookingUtils();
 	}
 	
 	

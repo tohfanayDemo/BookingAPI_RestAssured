@@ -1,15 +1,18 @@
 package com.qa.Booking.utils;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import org.testng.asserts.SoftAssert;
 
 import com.qa.Booking.pojo.Booking;
+import com.qa.Booking.pojo.InvalidBooking;
 
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 
-public class BookingHelper {
+public class BookingUtils {
 	
 	Response response;
 	SoftAssert softAssert;
@@ -48,5 +51,26 @@ public class BookingHelper {
         softAssert.assertEquals(json.getString("booking.bookingdates.checkin"), expected.getBookingdates().getCheckin());
         softAssert.assertEquals(json.getString("booking.bookingdates.checkout"), expected.getBookingdates().getCheckout());
         softAssert.assertEquals(json.getString("booking.additionalneeds"), expected.getAdditionalneeds());
+    }
+    
+    public Map<String, Object> convertToMap(InvalidBooking booking) {
+        //Map<String, Object> bookingMap = new LinkedHashMap<>();
+    	Map<String, Object> bookingMap = new HashMap<>();
+        bookingMap.put("firstname", booking.getFirstname());
+        bookingMap.put("lastname", booking.getLastname());
+        bookingMap.put("totalprice", booking.getTotalprice());
+        bookingMap.put("depositpaid", booking.getDepositpaid());
+
+        // Nested bookingdates
+        if (booking.getBookingdates() != null) {
+            //Map<String, Object> bookingDatesMap = new LinkedHashMap<>();
+        	Map<String, Object> bookingDatesMap = new HashMap<>();
+            bookingDatesMap.put("checkin", booking.getBookingdates().getCheckin());
+            bookingDatesMap.put("checkout", booking.getBookingdates().getCheckout());
+            bookingMap.put("bookingdates", bookingDatesMap);
+        }
+        bookingMap.put("additionalneeds", booking.getAdditionalneeds());
+
+        return bookingMap;
     }
 }
