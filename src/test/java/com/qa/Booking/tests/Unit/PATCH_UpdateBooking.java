@@ -1,5 +1,6 @@
 package com.qa.Booking.tests.Unit;
 
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -13,6 +14,7 @@ import com.qa.Booking.client.RestClient;
 import com.qa.Booking.constants.APIHTTPStatus;
 import com.qa.Booking.pojo.Booking;
 import com.qa.Booking.pojo.Booking.Bookingdates;
+import com.qa.Booking.schema.SchemaRepo;
 import com.qa.Booking.utils.ReusableDataUtil;
 import com.qa.Booking.utils.Util;
 
@@ -146,6 +148,21 @@ public class PATCH_UpdateBooking extends BaseTest{
 		softAssert.assertEquals(response.getStatusCode(), expectedStatusCode);
 		softAssert.assertTrue(response.getStatusLine().contains(expectedStatusLine));
 		softAssert.assertAll();
+
+	}
+	
+	@Test
+	public void partialUpdateSchemaValidation() {
+		
+		bookingDetails.setFirstname("UpdatedFirstName");
+		dates.setCheckout("2025-07-30");
+		bookingDetails.setBookingdates(dates);
+		
+		request = restClient.createRequestSpec_PostPutPatch(baseURI, "JSON", bookingDetails, token);
+		RestAssured.given(request).pathParam("id", bookingId)
+				.when().log().all().patch(PARTIAL_UPDATE_BOOKING)
+				.then().assertThat()
+				.body(matchesJsonSchema(SchemaRepo.getSchema("partialUpdateBooking")));
 
 	}
 	

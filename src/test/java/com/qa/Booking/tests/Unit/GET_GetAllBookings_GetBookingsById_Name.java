@@ -39,20 +39,20 @@ public class GET_GetAllBookings_GetBookingsById_Name extends BaseTest{
 		softAssert = new SoftAssert();
 	}
 	
-	@Test
+	@Test (groups = {"regression","unit", "smoke"})
 	public void getAllBookings_positive() {
 				
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
 		response = RestAssured.given(request).when().get(GET_ALL_BOOKINGS)
 				.then().assertThat().spec(ResponseBuilder.expResSpec(APIHTTPStatus.OK_200.getCode(), "JSON"))
-				.body(matchesJsonSchemaInClasspath("schema/GetAllBookings_GeyByName_Schema.json"))
+				.body(matchesJsonSchemaInClasspath("schema/GetAllBookings_GeyByName_Schema.json")) //matchesJsonSchemaInClasspath(...) expects a file name located in your src/test/resources directory, not a raw JSON string
 				.extract().response();
 		Assert.assertTrue(response.getStatusLine().contains(APIHTTPStatus.OK_200.getMessage()));
 		
 		bookingId = Util.generateRandomNumber(response);
 	}
 	
-	@Test
+	@Test (groups = {"regression","unit"})
 	public void getAllBookings_negative_incorrectBaseURI() {
 		
 		//incorrect baseURI
@@ -67,7 +67,7 @@ public class GET_GetAllBookings_GetBookingsById_Name extends BaseTest{
 		softAssert.assertAll();
 	}
 	
-	@Test
+	@Test (groups = {"regression","unit"})
 	public void getAllBookings_negative_incorrectEndpoint() {
 		
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
@@ -80,7 +80,7 @@ public class GET_GetAllBookings_GetBookingsById_Name extends BaseTest{
 		softAssert.assertAll();
 	}
 	
-	@Test
+	@Test (groups = {"regression","unit"})
 	public void getAllBookings_negative_incorrectHTTPMethod() {
 		
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
@@ -93,7 +93,7 @@ public class GET_GetAllBookings_GetBookingsById_Name extends BaseTest{
 		softAssert.assertAll();
 	}
 	
-	@Test
+	@Test (groups = {"regression","unit", "smoke"})
 	public void getBookingById_positive() {
 		
 		bookingId = 1013;
@@ -109,7 +109,7 @@ public class GET_GetAllBookings_GetBookingsById_Name extends BaseTest{
 		lastName = response.jsonPath().getString("lastname");
 	}
 	
-	@Test
+	@Test (groups = {"regression","unit"})
 	public void getBookingById_negative_incorrectBaseURI() {
 		
 		bookingId = 1013;
@@ -123,7 +123,7 @@ public class GET_GetAllBookings_GetBookingsById_Name extends BaseTest{
 		softAssert.assertAll();
 	}
 	
-	@Test
+	@Test (groups = {"regression","unit"})
 	public void getBookingById_negative_incorrectEndpoint() {
 		
 		bookingId = 1013;
@@ -143,7 +143,7 @@ public class GET_GetAllBookings_GetBookingsById_Name extends BaseTest{
 
 	}
 	
-	@Test
+	@Test (groups = {"regression","unit"})
 	public void getBookingById_negative_incorrectHTTPMethod() {
 		
 		bookingId = 1013;
@@ -164,7 +164,7 @@ public class GET_GetAllBookings_GetBookingsById_Name extends BaseTest{
 	    return ReusableDataUtil.getInvalidBookingIdData();
 	}
 	
-	@Test(dataProvider = "invalidBookingIdScenarios")
+	@Test(dataProvider = "invalidBookingIdScenarios", groups = {"regression","unit"})
 	public void getBookingById_negative_incorrectBookingId(String scenarioName, Object bookingId, int expectedStatusCode, String expectedStatusLine) {
 		
 		System.out.println(scenarioName);
@@ -186,7 +186,7 @@ public class GET_GetAllBookings_GetBookingsById_Name extends BaseTest{
 		
 	}
 	
-	@Test
+	@Test (groups = {"regression","unit", "smoke"})
 	public void getBookingByName_positive() {
 		
 		firstName ="Eric";
@@ -211,7 +211,7 @@ public class GET_GetAllBookings_GetBookingsById_Name extends BaseTest{
 		return ReusableDataUtil.getInvalidBookingNameData();
 	}
 	
-	@Test(dataProvider = "invalidBookingNameScenarios")
+	@Test(dataProvider = "invalidBookingNameScenarios", groups = {"regression","unit"})
 	public void getBookingByName_negative_incorrectName(String scenarioName, Object firstNameData, Object lastNameData, 
 			int expectedStatusCode, String expectedStatusLine) {
 		

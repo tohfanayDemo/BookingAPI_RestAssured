@@ -41,7 +41,7 @@ public class BookingFlow extends BaseTest{
 	
 	//end-to-end API flow: Auth → GET → POST → GET by ID → PUT → GET by ID → DELETE → GET by ID again to confirm deletion.
 	
-	@Test
+	@Test(groups = {"e2e", "regression"})
 	public void bookingFlow() {
 		
 		//Step1: Get All Bookings Count
