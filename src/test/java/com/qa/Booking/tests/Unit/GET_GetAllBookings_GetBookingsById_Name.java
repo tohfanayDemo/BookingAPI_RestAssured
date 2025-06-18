@@ -17,6 +17,7 @@ import com.qa.Booking.client.ResponseBuilder;
 import com.qa.Booking.client.RestClient;
 import com.qa.Booking.constants.APIHTTPStatus;
 import com.qa.Booking.utils.BookingUtils;
+import com.qa.Booking.utils.ReusableDataUtil;
 import com.qa.Booking.utils.Util;
 
 import io.restassured.RestAssured;
@@ -159,14 +160,8 @@ public class GET_GetAllBookings_GetBookingsById_Name extends BaseTest{
 	}
 	
 	@DataProvider(name = "invalidBookingIdScenarios")
-	public Object[][] invalidBookingIdScenarios() {
-	    return new Object[][] {
-	        {"Incorrect PathParameter - Non-existing ID", 111111111, 404, "Not Found"},
-	        {"Incorrect PathParameter - String", "Twelve", 400, "Bad Request"},
-	        {"Incorrect PathParameter - Null Value", null, 400, "Bad Request"},
-	        {"Incorrect PathParameter - Special Character", "@-$", 400, "Bad Request"}
-	        
-	    };
+	public Object[][] provideInvalidBookingIdData() {
+	    return ReusableDataUtil.getInvalidBookingIdData();
 	}
 	
 	@Test(dataProvider = "invalidBookingIdScenarios")
@@ -212,25 +207,8 @@ public class GET_GetAllBookings_GetBookingsById_Name extends BaseTest{
 	}
 	
 	@DataProvider(name = "invalidBookingNameScenarios")
-	public Object[][] invalidNamePathParameters() {
-	    return new Object[][] {
-	    	{"Incorrect Path Parameter - Non-existent First Name", "Meh", null, 404, "Not Found"},
-	        {"Incorrect Path Parameter - Non-existent Last Name", null, "Meh", 404, "Not Found"},
-	        {"Invalid Path Parameter - First Name contains Number", 23, null, 400, "Bad Request"},
-	        {"Invalid Path Parameter - Last Name contains Number", null, 23, 400, "Bad Request"},
-	        {"Invalid Path Parameter - First Name contains Boolean value", true, null, 400, "Bad Request"},
-	        {"Invalid Path Parameter - Last Name contains Boolean value", null, false, 400, "Bad Request"},
-	        {"Invalid Path Parameter - First Name contains Special character", "@-!", null, 400, "Bad Request"},
-	        {"Invalid Path Parameter - Last Name contains Special character", null, "@-!", 400, "Bad Request"},
-	        {"Invalid Path Parameter - First Name contains White space", " ", null, 400, "Bad Request"},
-	        {"Invalid Path Parameter - Last Name contains White space", null, " ", 400, "Bad Request"},
-	        {"Empty String Values - First Name", "", null, 400, "Bad Request"},
-	        {"Empty String Values - Last Name", null, "", 400, "Bad Request"},
-	        {"Empty String Values - Both Parameters", "", "", 400, "Bad Request"},
-	        {"Missing First Name", null, null, 400, "Bad Request"},
-	        {"Missing Last Name", null, null, 400, "Bad Request"},
-	        {"Missing Both Names", null, null, 400, "Bad Request"}
-	    };
+	public Object[][] provideInvalidBookingNameData() {
+		return ReusableDataUtil.getInvalidBookingNameData();
 	}
 	
 	@Test(dataProvider = "invalidBookingNameScenarios")

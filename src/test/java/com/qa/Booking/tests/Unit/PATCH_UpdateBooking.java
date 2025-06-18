@@ -13,6 +13,7 @@ import com.qa.Booking.client.RestClient;
 import com.qa.Booking.constants.APIHTTPStatus;
 import com.qa.Booking.pojo.Booking;
 import com.qa.Booking.pojo.Booking.Bookingdates;
+import com.qa.Booking.utils.ReusableDataUtil;
 import com.qa.Booking.utils.Util;
 
 import io.restassured.RestAssured;
@@ -38,8 +39,8 @@ public class PATCH_UpdateBooking extends BaseTest{
 		restClient = new RestClient();
 		
 		//Create Booking
-		Bookingdates dates = new Bookingdates("2025-07-01","2025-07-15");
-		Booking bookingDetails = new Booking("Tohfee","Nay",120.99,true, dates,"No vege oil");
+		dates = new Bookingdates("2025-07-01","2025-07-15");
+		bookingDetails = new Booking("Tohfee","Nay",120.99,true, dates,"No vege oil");
 		
 		request = restClient.createRequestSpec_PostPutPatch(baseURI, "JSON",bookingDetails);
 		response = RestAssured.given(request).when().post(CREATE_BOOKING);
@@ -120,7 +121,35 @@ public class PATCH_UpdateBooking extends BaseTest{
 
 	}	
 	
-	@AfterClass
+	@DataProvider(name = "partialUpdateInvalidBookingIdData")
+	public Object[][] providePartialUpdateInvalidBookingIdData() {
+		return ReusableDataUtil.getInvalidBookingIdData();
+	}
+	
+	@Test(dataProvider = "partialUpdateInvalidBookingIdData")
+	public void invalidBookingIdForPatchCall(String scenarioName, Object bookingId, int expectedStatusCode, String expectedStatusLine) {
+		
+		System.out.println(scenarioName);
+		
+		if (bookingId == null) {
+			bookingId =  ""; 
+		} 
+		
+		bookingDetails.setFirstname("UpdatedFirstName");
+		dates.setCheckout("2025-07-30");
+		bookingDetails.setBookingdates(dates);
+		
+		request = restClient.createRequestSpec_PostPutPatch(baseURI, "JSON", bookingDetails, token);
+		response = RestAssured.given(request).urlEncodingEnabled(false).pathParam("id", bookingId)
+				.when().log().all().patch(PARTIAL_UPDATE_BOOKING);
+
+		softAssert.assertEquals(response.getStatusCode(), expectedStatusCode);
+		softAssert.assertTrue(response.getStatusLine().contains(expectedStatusLine));
+		softAssert.assertAll();
+
+	}
+	
+	@AfterClass()
 	public void deleteBooking() {
 		
 		//Delete Booking
