@@ -62,7 +62,6 @@ public class PATCH_UpdateBooking extends BaseTest{
 				.then().log().all()
 				.assertThat().spec(ResponseBuilder.expResSpec(APIHTTPStatus.OK_200.getCode(), "JSON"))
 				.extract().path("token");
-		System.out.println("Token generated = " + token);
 	}
 
 	@DataProvider(name = "partialUpdateBookingData")

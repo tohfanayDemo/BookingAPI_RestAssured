@@ -7,11 +7,7 @@ import io.restassured.specification.RequestSpecification;
 public class RestClient {
 
 	private RequestSpecBuilder requestSpec;	
-	
-	public RestClient() {
-		requestSpec = new RequestSpecBuilder();		
-	}
-	
+
 	private static ContentType toContentType(String type) {
 	    switch (type.toLowerCase()) {
 	        case "json": return ContentType.JSON;
@@ -23,8 +19,10 @@ public class RestClient {
 	}
 	
 	/*POST/PUT*/
-	public RequestSpecification createRequestSpec_PostPutPatch(String baseURI, String expectedContentType, Object requestBody, String... bearerToken) {
+	public RequestSpecification createRequestSpec_PostPutPatch(String baseURI, String expectedContentType, 
+			Object requestBody, String... bearerToken) {
 
+		requestSpec = new RequestSpecBuilder();	
 		requestSpec.setBaseUri(baseURI);
 		requestSpec.setContentType(toContentType(expectedContentType));
 		requestSpec.addHeader("Accept", "*/*");
@@ -44,6 +42,7 @@ public class RestClient {
 	
 	public RequestSpecification createRequestSpec_GetDelete(String baseURI, String expectedContentType, String... bearerToken) {
 
+		requestSpec = new RequestSpecBuilder();	
 		requestSpec.setBaseUri(baseURI);
 		requestSpec.setContentType(toContentType(expectedContentType));
 		requestSpec.addHeader("Accept", "*/*");

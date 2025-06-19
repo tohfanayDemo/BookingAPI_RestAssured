@@ -1,7 +1,10 @@
 package com.qa.Booking.base;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
@@ -10,6 +13,7 @@ import org.testng.asserts.SoftAssert;
 import com.qa.Booking.client.RestClient;
 import com.qa.Booking.configuration.ConfigurationManager;
 import com.qa.Booking.utils.BookingUtils;
+import com.qa.Booking.utils.JsonDataReader;
 
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
@@ -25,16 +29,24 @@ public class BaseTest {
 	public static final String UPDATE_BOOKING = "/booking/{id}";
 	public static final String PARTIAL_UPDATE_BOOKING="/booking/{id}";
 	public static final String DELETE_BOOKING="/booking/{id}";
-	
 	public static final String INCORRECT_BASEURI = "https://restful-bookerrrsss.herokuapp.com";
 	
+	public static final String testDataJsonFilePath = "src/test/resources/testData/bookingAPI_testData.json";
+
 	protected ConfigurationManager config;
 	protected Properties prop;
 	protected RestClient restClient;
 	protected String baseURI, testUsername, testPassword, credentialJson;
 	protected SoftAssert softAssert;
 	protected BookingUtils bookingUtils;
-
+	protected Map<String, List<Map<String, String>>> testData;
+	
+	@BeforeSuite
+	public void loadTestData() {
+		
+		 testData = JsonDataReader.readRequestData(testDataJsonFilePath);
+	}
+	
 	@Parameters({"baseURI"})
 	@BeforeTest
 	public void setUp(@Optional String baseURI) {
@@ -58,6 +70,7 @@ public class BaseTest {
 
 		credentialJson = "{ \"username\": \""+testUsername+"\", \"password\": \""+testPassword+"\" }";
 		bookingUtils = new BookingUtils();
+		
 	}
 	
 	
