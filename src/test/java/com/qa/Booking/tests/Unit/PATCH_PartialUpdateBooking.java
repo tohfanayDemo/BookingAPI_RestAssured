@@ -24,7 +24,7 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 
-public class PATCH_UpdateBooking extends BaseTest{
+public class PATCH_PartialUpdateBooking extends BaseTest{
 	
 	
 	RequestSpecification request;
@@ -77,7 +77,7 @@ public class PATCH_UpdateBooking extends BaseTest{
 		};
 	}
 	
-	@Test(dataProvider = "partialUpdateBookingData")
+	@Test(dataProvider = "partialUpdateBookingData", groups = {"smoke", "regression", "unit"})
 	public void partialUpdateBooking_positiveScenarios(String scenarioName, Object firstNameData,
 			Object lastNameData, Object totalpriceData, Object depositpaidData, Object checkinData, Object checkoutData,
 			Object additionalneedsData) {
@@ -113,7 +113,7 @@ public class PATCH_UpdateBooking extends BaseTest{
 		if (firstNameData != null) softAssert.assertEquals(json.getString("firstname"), firstNameData);
 		if (lastNameData != null) softAssert.assertEquals(json.getString("lastname"), lastNameData);
 		if (totalpriceData != null) softAssert.assertEquals(json.getDouble("totalprice"), (Double) totalpriceData);
-		if (depositpaidData != null) softAssert.assertEquals(json.getBoolean("depositpaid"), (Boolean) depositpaidData);
+		if (depositpaidData != null) softAssert.assertEquals((Boolean)json.getBoolean("depositpaid"), (Boolean) depositpaidData);
 		if (checkinData != null) softAssert.assertEquals(json.getString("bookingdates.checkin"), checkinData);
 		if (checkoutData != null) softAssert.assertEquals(json.getString("bookingdates.checkout"), checkoutData);
 		if (additionalneedsData != null) softAssert.assertEquals(json.getString("additionalneeds"), additionalneedsData);
@@ -127,7 +127,7 @@ public class PATCH_UpdateBooking extends BaseTest{
 		return ReusableDataUtil.getInvalidBookingIdData();
 	}
 	
-	@Test(dataProvider = "partialUpdateInvalidBookingIdData")
+	@Test(dataProvider = "partialUpdateInvalidBookingIdData", groups = {"unit", "regression"})
 	public void invalidBookingIdForPatchCall(String scenarioName, Object bookingId, int expectedStatusCode, String expectedStatusLine) {
 		
 		System.out.println(scenarioName);
@@ -150,7 +150,7 @@ public class PATCH_UpdateBooking extends BaseTest{
 
 	}
 	
-	@Test
+	@Test (groups = {"unit", "regression"})
 	public void partialUpdateSchemaValidation() {
 		
 		bookingDetails.setFirstname("UpdatedFirstName");

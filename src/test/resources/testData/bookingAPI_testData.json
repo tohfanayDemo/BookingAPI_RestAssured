@@ -99,7 +99,62 @@
                   "depositpaid":true,
                   "checkin":"2025-05-15",
                   "checkout":"2025-05-20",
-                  "additionalneeds":"Only vegan meal"
+                  "additionalneeds":"Only vegan meal",
+				  "expectedSchema":{
+								"type": "object",
+								"properties": {
+									"bookingid": {
+									"type": "number"
+									},
+									"booking": {
+									"type": "object",
+									"properties": {
+										"firstname": {
+										"type": "string"
+										},
+										"lastname": {
+										"type": "string"
+										},
+										"totalprice": {
+										"type": "number"
+										},
+										"depositpaid": {
+										"type": "boolean"
+										},
+										"bookingdates": {
+										"type": "object",
+										"properties": {
+											"checkin": {
+											"type": "string"
+											},
+											"checkout": {
+											"type": "string"
+											}
+										},
+										"required": [
+											"checkin",
+											"checkout"
+										]
+										},
+										"additionalneeds": {
+										"type": "string"
+										}
+									},
+									"required": [
+										"firstname",
+										"lastname",
+										"totalprice",
+										"depositpaid",
+										"bookingdates",
+										"additionalneeds"
+									]
+									}
+								},
+								"required": [
+									"bookingid",
+									"booking"
+								]
+							}
 
                }
             ]
@@ -710,84 +765,64 @@
 				  "lastname":"Update",
 				  "totalprice":100,
                   "depositpaid":true,
-                  "checkin":"2025-05-18",
-                  "checkout":"2025-05-30",
-                  "additionalneeds":"Only vegan meal for Breakfast"
+                  "checkin":"2025-07-18",
+                  "checkout":"2025-07-30",
+                  "additionalneeds":"Only vegan meal for Breakfast",
+				  "expectedSchema":{
+						  "type": "object",
+						  "properties": {
+							"firstname": {
+							  "type": "string"
+							},
+							"lastname": {
+							  "type": "string"
+							},
+							"totalprice": {
+							  "type": "number"
+							},
+							"depositpaid": {
+							  "type": "boolean"
+							},
+							"bookingdates": {
+							  "type": "object",
+							  "properties": {
+								"checkin": {
+								  "type": "string"
+								},
+								"checkout": {
+								  "type": "string"
+								}
+							  },
+							  "required": [
+								"checkin",
+								"checkout"
+							  ]
+							},
+							"additionalneeds": {
+							  "type": "string"
+							}
+						  },
+						  "required": [
+							"firstname",
+							"lastname",
+							"totalprice",
+							"depositpaid",
+							"bookingdates",
+							"additionalneeds"
+						  ]
+						}
                }
             ]
         },
 		{
             "name":"Negative - UpdateBooking",
             "data":[
-			   {
-                  "scenarioName":"Incorrect Http Method",
-                  "httpMethod":"POST",
-                  "firstname":"ToffeUpdate",
-				  "lastname":"Update",
-				  "totalprice":100,
-                  "depositpaid":true,
-                  "checkin":"2025-05-18",
-                  "checkout":"2025-05-30",
-                  "additionalneeds":"Only vegan meal for Breakfast",
-                  "statusCode":405,
-                  "statusLine":"Method Not Allowed"
-               },
-               {
-                  "scenarioName":"Incorrect Endpoint",
-                  "endPoint":"bookingggs",
-				  "firstname":"ToffeUpdate",
-				  "lastname":"Update",
-				  "totalprice":100,
-                  "depositpaid":true,
-                  "checkin":"2025-05-18",
-                  "checkout":"2025-05-30",
-                  "additionalneeds":"Only vegan meal for Breakfast",
-                  "statusCode":404,
-                  "statusLine":"Not Found"
-               },
-               {
-                  "scenarioName":"Incorrect BaseURL",
-                  "baseURL":"https://restful-looker.herokuapp.com",
-				  "firstname":"ToffeUpdate",
-				  "lastname":"Update",
-				  "totalprice":100,
-                  "depositpaid":true,
-                  "checkin":"2025-05-18",
-                  "checkout":"2025-05-30",
-                  "additionalneeds":"Only vegan meal for Breakfast",
-                  "statusCode":404,
-                  "statusLine":"Not Found"
-               },
-			   {
-                  "scenarioName":"Incorrect Content-Type",
-                  "firstname":"ToffeUpdate",
-				  "lastname":"Update",
-				  "totalprice":100,
-                  "depositpaid":true,
-                  "checkin":"2025-05-18",
-                  "checkout":"2025-05-30",
-                  "additionalneeds":"Incorrect Content-Type",
-                  "statusCode":415,
-                  "statusLine":"Unsupported Media Type"
-               },
-			   {
-                  "scenarioName":"No Token",
-                  "firstname":"ToffeUpdate",
-				  "lastname":"Update",
-				  "totalprice":100,
-                  "depositpaid":true,
-                  "checkin":"2025-05-18",
-                  "checkout":"2025-05-30",
-                  "additionalneeds":"No Auth",
-                  "statusCode":403,
-                  "statusLine":"Forbidden"
-               }, 
                {
                   "scenarioName":"All Fields Empty",
                   "firstname":"",
 				  "lastname":"",
-				  "totalprice":"",
-                  "depositpaid":"",
+				  "totalprice":0,
+                  "depositpaid":false,
                   "checkin":"",
                   "checkout":"",
                   "additionalneeds":"",
@@ -801,8 +836,8 @@
 				  "lastname":"Update",
 				  "totalprice":100,
                   "depositpaid":true,
-                  "checkin":"2025-05-18",
-                  "checkout":"2025-05-30",
+                  "checkin":"2025-07-20",
+                  "checkout":"2025-07-30",
                   "additionalneeds":"Only vegan meal for Breakfast",
                   "statusCode":400,
                   "statusLine":"Bad Request",
@@ -814,8 +849,8 @@
 				  "lastname":"",
 				  "totalprice":100,
                   "depositpaid":true,
-                  "checkin":"2025-05-18",
-                  "checkout":"2025-05-30",
+                  "checkin":"2025-07-20",
+                  "checkout":"2025-07-30",
                   "additionalneeds":"Only vegan meal for Breakfast",
                   "statusCode":400,
                   "statusLine":"Bad Request",
@@ -1015,7 +1050,7 @@
                   "message":"totalprice has to be a positive number"
                },
 			   {
-                  "scenarioName":"totalprice is a null value",
+                  "scenarioName":"Mismatched Data Type - totalprice contains null value",
                   "firstname":"ToffeUpdate",
 				  "lastname":"Update",
 				  "totalprice":null,
@@ -1080,7 +1115,7 @@
                   "message":"depositpaid has to be true or false"
                },
 			   {
-                  "scenarioName":"Mismatched Data Type - depositpaid contains null value only",
+                  "scenarioName":"Mismatched Data Type - depositpaid contains null value",
                   "firstname":"ToffeUpdate",
 				  "lastname":"Update",
 				  "totalprice":100,
@@ -1119,7 +1154,7 @@
                   "message":"checkin only accepts future date"
                },
 			   {
-                  "scenarioName":"Mismatched Data Type - checkin contains null only",
+                  "scenarioName":"Mismatched Data Type - checkin contains null value",
                   "firstname":"ToffeUpdate",
 				  "lastname":"Update",
 				  "totalprice":100,
@@ -1137,8 +1172,8 @@
 				  "lastname":"Update",
 				  "totalprice":100,
                   "depositpaid":true,
-                  "checkin":"2025-Tomorrow",
-                  "checkout":"2025-05-30",
+                  "checkin":"2025-June-20",
+                  "checkout":"2025-07-30",
                   "additionalneeds":"Only vegan meal for Breakfast",
                   "statusCode":400,
                   "statusLine":"Bad Request",
@@ -1151,7 +1186,7 @@
 				  "totalprice":100,
                   "depositpaid":true,
                   "checkin":"2025-05-02",
-                  "checkout":"2025-05-30",
+                  "checkout":"2025-07-30",
                   "additionalneeds":"Only vegan meal for Breakfast",
                   "statusCode":400,
                   "statusLine":"Bad Request",
@@ -1164,7 +1199,7 @@
 				  "totalprice":100,
                   "depositpaid":true,
                   "checkin":"2025-05-18",
-                  "checkout":2025,
+                  "checkout":20250630,
                   "additionalneeds":"Only vegan meal for Breakfast",
                   "statusCode":400,
                   "statusLine":"Bad Request",
@@ -1184,7 +1219,7 @@
                   "message":"checkout only accepts future date"
                },
 			   {
-                  "scenarioName":"Mismatched Data Type - checkout contains null only",
+                  "scenarioName":"Mismatched Data Type - checkout contains null value",
                   "firstname":"ToffeUpdate",
 				  "lastname":"Update",
 				  "totalprice":100,
@@ -1215,8 +1250,8 @@
 				  "lastname":"Update",
 				  "totalprice":100,
                   "depositpaid":true,
-				  "checkin":"2025-05-18",
-                  "checkout":"2025-05-05",
+				  "checkin":"2025-07-20",
+                  "checkout":"2025-07-05",
                   "additionalneeds":"Only vegan meal for Breakfast",
                   "statusCode":400,
                   "statusLine":"Bad Request",
@@ -1262,7 +1297,7 @@
                   "message":"additionalneeds Must contain String"
                },
 			   {
-                  "scenarioName":"Mismatched Data Type - additionalneeds contains null value only",
+                  "scenarioName":"Mismatched Data Type - additionalneeds contains null value",
                   "firstname":"ToffeUpdate",
 				  "lastname":"Update",
 				  "totalprice":100,
@@ -1273,58 +1308,6 @@
                   "statusCode":400,
                   "statusLine":"Bad Request",
                   "message":"additionalneeds Must contain String"
-               },
-			   {
-                  "scenarioName":"Incorrect PathParameter - Non-existing ID",
-                  "bookingId":111111111,
-				  "firstname":"ToffeUpdate",
-				  "lastname":"Update",
-				  "totalprice":100,
-                  "depositpaid":true,
-                  "checkin":"2025-05-18",
-                  "checkout":"2025-05-30",
-                  "additionalneeds":"Only vegan meal for Breakfast",
-                  "statusCode":404,
-                  "statusLine":"Not Found"
-               },
-               {
-                  "scenarioName":"Incorrect PathParameter - String", 
-                  "bookingId":"Twelve",
-				  "firstname":"ToffeUpdate",
-				  "lastname":"Update",
-				  "totalprice":100,
-                  "depositpaid":true,
-                  "checkin":"2025-05-18",
-                  "checkout":"2025-05-30",
-                  "additionalneeds":"Only vegan meal for Breakfast",
-                  "statusCode":400,
-                  "statusLine":"Bad Request"
-               },
-               {
-                  "scenarioName":"Incorrect PathParameter - Special Character", 
-                  "bookingId":"@-$",
-				  "firstname":"ToffeUpdate",
-				  "lastname":"Update",
-				  "totalprice":100,
-                  "depositpaid":true,
-                  "checkin":"2025-05-18",
-                  "checkout":"2025-05-30",
-                  "additionalneeds":"Only vegan meal for Breakfast",
-                  "statusCode":400,
-                  "statusLine":"Bad Request"
-               },
-               {
-                  "scenarioName":"Incorrect PathParameter - Null Value",
-                  "bookingId":null,
-				  "firstname":"ToffeUpdate",
-				  "lastname":"Update",
-				  "totalprice":100,
-                  "depositpaid":true,
-                  "checkin":"2025-05-18",
-                  "checkout":"2025-05-30",
-                  "additionalneeds":"Only vegan meal for Breakfast",
-                  "statusCode":400,
-                  "statusLine":"Bad Request"
                }
             ]
         },
@@ -1475,63 +1458,6 @@
 			   {
                   "scenarioName":"Update additionalneeds only",
                   "additionalneeds":"Only vegan meal for Lunch and Dinner"
-               }
-            ]
-        },
-		{
-            "name":"Negative - DeleteBooking",
-            "data":[
-               {
-                  "scenarioName":"Incorrect Http Method",
-                  "httpMethod":"POST",
-                  "statusCode":405,
-                  "statusLine":"Method Not Allowed"
-               },
-               {
-                  "scenarioName":"Incorrect Endpoint",
-                  "endPoint":"baking",
-                  "statusCode":404,
-                  "statusLine":"Not Found"
-               },
-			   {
-                  "scenarioName":"Incorrect BaseURL",
-                  "baseURL":"https://restful-looker.herokuapp.com",
-                  "statusCode":404,
-                  "statusLine":"Not Found"
-               },
-               {
-                  "scenarioName":"Incorrect PathParameter - Non-existing BookingID",
-                  "bookingId":1111111,
-                  "statusCode":404,
-                  "statusLine":"Not Found"
-               },
-			   {
-                  "scenarioName":"Incorrect PathParameter - Already Deleted BookingID",
-                  "statusCode":404,
-                  "statusLine":"Not Found"
-               },
-               {
-                  "scenarioName":"Incorrect PathParameter - String",
-                  "bookingId":"Twelve",
-                  "statusCode":400,
-                  "statusLine":"Bad Request"
-               },
-               {
-                  "scenarioName":"Incorrect PathParameter - Special Character",
-                  "bookingId":"@-$",
-                  "statusCode":400,
-                  "statusLine":"Bad Request"
-               },
-               {
-                  "scenarioName":"Incorrect PathParameter - Null Value",
-                  "bookingId":null,
-                  "statusCode":400,
-                  "statusLine":"Bad Request"
-               },
-               {
-                  "scenarioName":"No Token",
-                  "statusCode":403,
-                  "statusLine":"Forbidden"
                }
             ]
         }         

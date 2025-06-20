@@ -58,52 +58,52 @@ public class DEL_DeleteBooking extends BaseTest{
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON", token);
 	}
 	
-	@Test
+	@Test (groups = {"regression","unit"})
 	public void deleteBooking_IncorrectHttpMethod() {
 
 		response = RestAssured.given(request).pathParam("id", bookingId)
 				.when().log().all().patch(DELETE_BOOKING);
 		
-		softAssert.assertEquals(response.getStatusCode(), APIHTTPStatus.METHOD_NOT_ALLOWED_405.getCode());
+		softAssert.assertEquals((int)response.getStatusCode(), (int)APIHTTPStatus.METHOD_NOT_ALLOWED_405.getCode());
 		softAssert.assertTrue(response.getStatusLine().contains(APIHTTPStatus.METHOD_NOT_ALLOWED_405.getMessage()));
 		softAssert.assertAll();
 
 	}
 	
-	@Test
+	@Test (groups = {"regression","unit"})
 	public void deleteBooking_IncorrectEndpoint() {
 
 		String incorrectEndpoint = "/baking/{id}";
 		response = RestAssured.given(request).pathParam("id", bookingId)
 				.when().log().all().delete(incorrectEndpoint);
 		
-		softAssert.assertEquals(response.getStatusCode(), APIHTTPStatus.NOT_FOUND_404.getCode());
+		softAssert.assertEquals((int)response.getStatusCode(), (int)APIHTTPStatus.NOT_FOUND_404.getCode());
 		softAssert.assertTrue(response.getStatusLine().contains(APIHTTPStatus.NOT_FOUND_404.getMessage()));
 		softAssert.assertAll();
 
 	}
 	
-	@Test
-	public void deleteBooking_BaseURL() {
+	@Test (groups = {"regression","unit"})
+	public void deleteBooking_IncorrectBaseURL() {
 
 		request = restClient.createRequestSpec_GetDelete(INCORRECT_BASEURI, "JSON", token);
 		response = RestAssured.given(request).pathParam("id", bookingId)
 				.when().log().all().delete(DELETE_BOOKING);
 		
-		softAssert.assertEquals(response.getStatusCode(), APIHTTPStatus.NOT_FOUND_404.getCode());
+		softAssert.assertEquals((int)response.getStatusCode(), (int)APIHTTPStatus.NOT_FOUND_404.getCode());
 		softAssert.assertTrue(response.getStatusLine().contains(APIHTTPStatus.NOT_FOUND_404.getMessage()));
 		softAssert.assertAll();
 
 	}
 	
-	@Test
+	@Test (groups = {"regression","unit"})
 	public void deleteBooking_NoAuth() {
 
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
 		response = RestAssured.given(request).pathParam("id", bookingId)
 				.when().log().all().delete(DELETE_BOOKING);
 		
-		softAssert.assertEquals(response.getStatusCode(), APIHTTPStatus.FORBIDDEN_403.getCode());
+		softAssert.assertEquals((int)response.getStatusCode(), (int)APIHTTPStatus.FORBIDDEN_403.getCode());
 		softAssert.assertTrue(response.getStatusLine().contains(APIHTTPStatus.FORBIDDEN_403.getMessage()));
 		softAssert.assertAll();
 
@@ -116,7 +116,7 @@ public class DEL_DeleteBooking extends BaseTest{
 	}
 	
 	
-	@Test (dataProvider = "incorrectBookingIdValues")
+	@Test (dataProvider = "incorrectBookingIdValues", groups = {"regression","unit"})
 	public void deleteBooking_IncorrectPathParameter(String scenarioName, Object bookingId, int expectedStatusCode, String expectedStatusLine) {
 		
 		if (bookingId == null) {
@@ -127,31 +127,31 @@ public class DEL_DeleteBooking extends BaseTest{
 		response = RestAssured.given(request).urlEncodingEnabled(false).pathParam("id", bookingId)
 				.when().log().all().delete(DELETE_BOOKING);
 		
-		softAssert.assertEquals(response.getStatusCode(), expectedStatusCode);
+		softAssert.assertEquals((int)response.getStatusCode(), (int)expectedStatusCode);
 		softAssert.assertTrue(response.getStatusLine().contains(expectedStatusLine));
 		softAssert.assertAll();
 	}
 	
-	@Test
+	@Test (groups = {"regression","unit", "smoke"})
 	public void deleteBooking_positive() {
 
 		response = RestAssured.given(request).pathParam("id", bookingId)
 				.when().log().all().delete(DELETE_BOOKING);
 		
-		softAssert.assertEquals(response.getStatusCode(), APIHTTPStatus.NO_CONTENT_204.getCode());
+		softAssert.assertEquals((int)response.getStatusCode(), (int)APIHTTPStatus.NO_CONTENT_204.getCode());
 		softAssert.assertTrue(response.getStatusLine().contains(APIHTTPStatus.NO_CONTENT_204.getMessage()));
 		softAssert.assertAll();
 
 	}
 	
-	@Test (dependsOnMethods = {"deleteBooking_positive"})
+	@Test (dependsOnMethods = {"deleteBooking_positive"}, groups = {"regression"})
 	public void deleteBooking_AlreadyDeletedBookingId() {
 
 		request = restClient.createRequestSpec_GetDelete(baseURI, "JSON");
 		response = RestAssured.given(request).pathParam("id", bookingId)
 				.when().log().all().delete(DELETE_BOOKING);
 		
-		softAssert.assertEquals(response.getStatusCode(), APIHTTPStatus.FORBIDDEN_403.getCode());
+		softAssert.assertEquals((int)response.getStatusCode(),(int)APIHTTPStatus.FORBIDDEN_403.getCode());
 		softAssert.assertTrue(response.getStatusLine().contains(APIHTTPStatus.FORBIDDEN_403.getMessage()));
 		softAssert.assertAll();
 

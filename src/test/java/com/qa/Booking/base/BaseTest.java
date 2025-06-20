@@ -39,7 +39,7 @@ public class BaseTest {
 	protected String baseURI, testUsername, testPassword, credentialJson;
 	protected SoftAssert softAssert;
 	protected BookingUtils bookingUtils;
-	protected Map<String, List<Map<String, String>>> testData;
+	protected Map<String, List<Map<String, Object>>> testData;
 	
 	@BeforeSuite
 	public void loadTestData() {
